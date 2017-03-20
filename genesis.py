@@ -1,7 +1,8 @@
-import hashlib, binascii, struct, array, os, time, sys, optparse
+import hashlib, binascii, struct, array, os, time, sys, optparse, codecs
 import scrypt
 
 from construct import *
+from functools import *
 
 
 def main():
@@ -20,6 +21,14 @@ def main():
   genesis_hash, nonce = generate_hash(block_header, algorithm, options.nonce, options.bits)
   announce_found_genesis(genesis_hash, nonce)
 
+def toHex(s):
+    lst = []
+    for ch in s:
+        hv = hex(ord(ch)).replace('0x', '')
+        if len(hv) == 1:
+            hv = '0'+hv
+        lst.append(hv)
+    return reduce(lambda x,y:x+y, lst)
 
 def get_args():
   parser = optparse.OptionParser()
@@ -57,10 +66,10 @@ def create_input_script(psz_timestamp):
   psz_prefix = ""
   #use OP_PUSHDATA1 if required
   if len(psz_timestamp) > 76: psz_prefix = '4c'
-
-  script_prefix = '04ffff001d0104' + psz_prefix + chr(len(psz_timestamp)).encode('hex')
-  print (script_prefix + psz_timestamp.encode('hex'))
-  return (script_prefix + psz_timestamp.encode('hex')).decode('hex')
+  script_prefix = '04ffff001d0104' + psz_prefix + toHex(chr(len(psz_timestamp)))
+  print(script_prefix + toHex(psz_timestamp))
+  return(codecs.decode((script_prefix + toHex(psz_timestamp)), "hex_codec"))
+  
 
 def create_output_script(pubkey):
   script_len = '41'
