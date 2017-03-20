@@ -12,9 +12,9 @@ def main():
 
   input_script  = create_input_script(options.timestamp)
   output_script = create_output_script(options.pubkey)
-  type(input_script)
-  type(output_script)
-  type(options)
+  print(type(input_script))
+  print(type(output_script))
+  print(type(options))
   # hash merkle root is the double sha256 hash of the transaction(s) 
   #tx = create_transaction(input_script, output_script,options)
   #hash_merkle_root = hashlib.sha256(hashlib.sha256(tx).digest()).digest()
